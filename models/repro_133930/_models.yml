@@ -1,0 +1,12 @@
+version: 2
+
+models:
+  - name: customer
+    latest_version: 2
+    versions:
+      - v: 1
+        # future date -> emits UpcomingReferenceDeprecation ("slated for deprecation")
+        deprecation_date: "2027-01-01T00:00:00+00:00"
+      - v: 2
+
+  - name: customer_se
