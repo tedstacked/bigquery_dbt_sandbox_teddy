@@ -1,0 +1,22 @@
+version: 2
+
+unit_tests:
+  # Faithful repro of ZD136396. Incremental model-under-test with the
+  # is_incremental:false override -- the pattern that PASSES on dbt Core.
+  # Expected: PASS on dbt Core; FAIL on Fusion pre-2.0.1 (dbt1308: schema
+  # fetch of the not-yet-built relation despite the override); PASS on
+  # Fusion 2.0.1+ (fs#12709 infers columns from compiled SQL).
+  - name: ut_repro
+    model: fct_repro_incremental
+    overrides:
+      macros:
+        is_incremental: false
+    given:
+      - input: ref('stg_repro_input')
+        rows:
+          - {id: 1, val: 'a'}
+          - {id: 2, val: 'b'}
+    expect:
+      rows:
+        - {id: 1, val: 'a'}
+        - {id: 2, val: 'b'}
