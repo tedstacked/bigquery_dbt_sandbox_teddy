@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: fct_osi_orders
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: metricflow_time_spine
+    time_spine:
+      standard_granularity_column: date_day
+    columns:
+      - name: date_day
+        granularity: day
+
+semantic_models:
+  - name: osi_orders
+    model: ref('fct_osi_orders')
+    defaults:
+      agg_time_dimension: ordered_at
+    entities:
+      - name: order_id
+        type: primary
+    dimensions:
+      - name: ordered_at
+        type: time
+        type_params:
+          time_granularity: day
+    measures:
+      - name: order_count
+        agg: count
+        expr: order_id
+      - name: order_amount
+        agg: sum
+        expr: amount
+
+metrics:
+  # Public simple metric: no OSI warning expected
+  - name: orders
+    label: Orders
+    type: simple
+    type_params:
+      measure: order_count
+
+  # Cumulative metric: expect CUMULATIVE_SEMANTICS_LOSS for this metric, and
+  # PRIVATE_METRIC_DROPPED for the private simple metric dbt creates from order_amount
+  - name: order_amount_7d
+    label: Order amount (rolling 7 days)
+    type: cumulative
+    type_params:
+      measure: order_amount
+      cumulative_type_params:
+        window: 7 days
