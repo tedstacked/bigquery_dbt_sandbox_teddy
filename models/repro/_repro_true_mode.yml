@@ -47,3 +47,20 @@ unit_tests:
       rows:
         - {id: 2, val: 'b'}
         - {id: 3, val: 'c'}
+
+  # ZD136396 control: same existing model with the new column, but
+  # is_incremental: false. Expected: PASS on Fusion (compiled-SQL schema).
+  - name: ut_false_newcol
+    model: fct_ut_true_dict
+    overrides:
+      macros:
+        is_incremental: false
+    given:
+      - input: ref('stg_repro_input')
+        rows:
+          - {id: 1, val: 'a'}
+          - {id: 2, val: 'b'}
+    expect:
+      rows:
+        - {id: 1, val: 'a', new_col: 'x'}
+        - {id: 2, val: 'b', new_col: 'x'}
