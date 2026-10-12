@@ -18,10 +18,12 @@ unit_tests:
       - input: this
         rows:
           - {id: 1, val: 'a'}
+    # ZD136396 existing-model case: new_col is added in this PR, so the
+    # cloned prod table does not have it yet.
     expect:
       rows:
-        - {id: 2, val: 'b'}
-        - {id: 3, val: 'c'}
+        - {id: 2, val: 'b', new_col: 'x'}
+        - {id: 3, val: 'c', new_col: 'x'}
 
   # is_incremental: true + format: sql `this` fixture.
   # Expected with no table: PASS on Core (sql fixtures skip typing),

@@ -9,7 +9,8 @@
 
 select
     id,
-    val
+    val,
+    'x' as new_col
 from {{ ref('stg_repro_input') }}
 {% if is_incremental() %}
 where id > (select max(id) from {{ this }})
