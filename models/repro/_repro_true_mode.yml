@@ -1,0 +1,47 @@
+version: 2
+
+unit_tests:
+  # ZD136396 follow-up. is_incremental: true + dict `this` fixture.
+  # Expected with no table: FAIL on Core (fixture typing needs the relation)
+  # and FAIL on Fusion (dbt1308). Expected after --empty: PASS on both.
+  - name: ut_true_dict
+    model: fct_ut_true_dict
+    overrides:
+      macros:
+        is_incremental: true
+    given:
+      - input: ref('stg_repro_input')
+        rows:
+          - {id: 1, val: 'a'}
+          - {id: 2, val: 'b'}
+          - {id: 3, val: 'c'}
+      - input: this
+        rows:
+          - {id: 1, val: 'a'}
+    expect:
+      rows:
+        - {id: 2, val: 'b'}
+        - {id: 3, val: 'c'}
+
+  # is_incremental: true + format: sql `this` fixture.
+  # Expected with no table: PASS on Core (sql fixtures skip typing),
+  # FAIL on Fusion (expect schema still fetched from the warehouse).
+  - name: ut_true_sql
+    model: fct_ut_true_sql
+    overrides:
+      macros:
+        is_incremental: true
+    given:
+      - input: ref('stg_repro_input')
+        rows:
+          - {id: 1, val: 'a'}
+          - {id: 2, val: 'b'}
+          - {id: 3, val: 'c'}
+      - input: this
+        format: sql
+        rows: |
+          select 1 as id, 'a' as val
+    expect:
+      rows:
+        - {id: 2, val: 'b'}
+        - {id: 3, val: 'c'}
