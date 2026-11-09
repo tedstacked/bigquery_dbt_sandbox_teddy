@@ -31,3 +31,10 @@ models:
         data_tests:
           - unique
       - name: row_kind
+
+  - name: repro_140574_nulls_distinct_val
+    columns:
+      - name: id
+        data_tests:
+          - unique
+      - name: val
