@@ -1,5 +1,6 @@
 -- ZD #140574 control: the same 30,000-row shape as repro_140574_nulls_20k,
 -- but the 20,000 extra rows get unique negative ids instead of NULL.
+-- PR change for the CI compare repro: this comment only, the data is identical.
 {{ config(materialized='table') }}
 
 select id, 'unique_key' as row_kind
