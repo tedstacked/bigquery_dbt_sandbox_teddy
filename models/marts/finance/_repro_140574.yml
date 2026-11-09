@@ -1,0 +1,33 @@
+version: 2
+
+# ZD #140574: each model has only a `unique` test on `id`, like maf_property_id
+# in the customer's shared_maf_property_id_lookup_v0_1. No not_null test and no
+# primary key constraint, so compare infers `id` as the primary key.
+models:
+  - name: repro_140574_nulls_5k
+    columns:
+      - name: id
+        data_tests:
+          - unique
+      - name: row_kind
+
+  - name: repro_140574_nulls_10k
+    columns:
+      - name: id
+        data_tests:
+          - unique
+      - name: row_kind
+
+  - name: repro_140574_nulls_20k
+    columns:
+      - name: id
+        data_tests:
+          - unique
+      - name: row_kind
+
+  - name: repro_140574_control
+    columns:
+      - name: id
+        data_tests:
+          - unique
+      - name: row_kind
