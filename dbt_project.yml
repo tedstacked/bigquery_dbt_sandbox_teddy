@@ -40,3 +40,7 @@ models:
     # Applies to all files under models/example/
     example:
       +materialized: table
+
+# Lets the dbt Cloud CLI find this project.
+dbt-cloud:
+  project-id: 70403103977421
